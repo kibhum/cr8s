@@ -16,7 +16,7 @@ pub struct NewRustacean {
     pub email: String,
 }
 
-#[derive(Queryable, Associations)]
+#[derive(Queryable, Deserialize, Serialize)]
 #[diesel(belongs_to(Rustacean, foreign_key = rustacean_id))]
 pub struct Crate {
     pub id: i32,
@@ -27,7 +27,7 @@ pub struct Crate {
     pub description: Option<String>,
     pub created_at: NaiveDateTime,
 }
-#[derive(Insertable)]
+#[derive(Insertable, Deserialize)]
 #[table_name = "crates"]
 pub struct NewCrate {
     pub rustacean_id: i32,

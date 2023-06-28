@@ -1,7 +1,7 @@
-use crate::{models::*, repositories::RustaceanRepository, DbConn};
+use crate::{models::*, repositories::RustaceanRepository, rocket_routes::DbConn};
 use rocket::{
     http::Status,
-    response::status::Custom,
+    response::status::{Custom, NoContent},
     serde::json::{serde_json::json, Json, Value},
 };
 
@@ -21,7 +21,7 @@ pub async fn view_rustacean(db: DbConn, id: i32) -> Result<Value, Custom<Value>>
     db.run(move |c| {
         // json!(e.to_string()) should be generic error like "Something went wrong"
         RustaceanRepository::find_one(c, id)
-            .map(|rustaceans| json!(rustaceans))
+            .map(|rustacean| json!(rustacean))
             .map_err(|e| Custom(Status::InternalServerError, json!(e.to_string())))
     })
     .await
@@ -35,7 +35,7 @@ pub async fn create_rustacean(
     db.run(|c| {
         // json!(e.to_string()) should be generic error like "Something went wrong"
         RustaceanRepository::create(c, new_rustacean.into_inner())
-            .map(|rustaceans| json!(rustaceans))
+            .map(|rustacean| json!(rustacean))
             .map_err(|e| Custom(Status::InternalServerError, json!(e.to_string())))
     })
     .await
@@ -50,18 +50,18 @@ pub async fn update_rustacean(
     db.run(move |c| {
         // json!(e.to_string()) should be generic error like "Something went wrong"
         RustaceanRepository::update(c, id, rustacean.into_inner())
-            .map(|rustaceans| json!(rustaceans))
+            .map(|rustacean| json!(rustacean))
             .map_err(|e| Custom(Status::InternalServerError, json!(e.to_string())))
     })
     .await
 }
 
 #[delete("/rustaceans/<id>")]
-pub async fn delete_rustacean(db: DbConn, id: i32) -> Result<Value, Custom<Value>> {
+pub async fn delete_rustacean(db: DbConn, id: i32) -> Result<NoContent, Custom<Value>> {
     db.run(move |c| {
         // json!(e.to_string()) should be generic error like "Something went wrong"
         RustaceanRepository::delete(c, id)
-            .map(|rustaceans| json!(rustaceans))
+            .map(|rustaceans: usize| NoContent)
             .map_err(|e| Custom(Status::InternalServerError, json!(e.to_string())))
     })
     .await

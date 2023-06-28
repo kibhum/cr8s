@@ -1,6 +1,3 @@
-use diesel::PgConnection;
-use rocket_sync_db_pools::database;
-
 #[macro_use]
 extern crate diesel;
 #[macro_use]
@@ -10,9 +7,6 @@ mod models;
 mod repositories;
 mod rocket_routes;
 mod schema;
-
-#[database("postgres")]
-pub struct DbConn(PgConnection);
 
 #[rocket::main]
 async fn main() {
@@ -27,7 +21,7 @@ async fn main() {
                 rocket_routes::rustaceans::delete_rustacean,
             ],
         )
-        .attach(DbConn::fairing())
+        .attach(rocket_routes::DbConn::fairing())
         .launch()
         .await;
 }
