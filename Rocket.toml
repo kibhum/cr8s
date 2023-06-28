@@ -1,0 +1,2 @@
+[global.databases]
+postgres = { url = "postgres://postgres:sqlkibethh@localhost/app_db" }
