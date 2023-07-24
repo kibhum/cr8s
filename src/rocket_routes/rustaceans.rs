@@ -61,7 +61,7 @@ pub async fn delete_rustacean(db: DbConn, id: i32) -> Result<NoContent, Custom<V
     db.run(move |c| {
         // json!(e.to_string()) should be generic error like "Something went wrong"
         RustaceanRepository::delete(c, id)
-            .map(|rustaceans: usize| NoContent)
+            .map(|_rustaceans: usize| NoContent)
             .map_err(|e| Custom(Status::InternalServerError, json!(e.to_string())))
     })
     .await
